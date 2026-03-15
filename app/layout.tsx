@@ -26,34 +26,76 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
     metadataBase: new URL("https://sh-himanshu.github.io/auto-cut"),
     title: {
-        default: "Auto Cut — Background Remover",
+        default: "Auto Cut — Free Background Remover | Private & Offline",
         template: "%s | Auto Cut",
     },
-    description: "Remove image backgrounds directly in your browser — no data sent to any server.",
+    description:
+        "Remove image backgrounds instantly in your browser for free. No uploads, no servers, no tracking — 100% private and works offline. AI-powered background removal tool.",
     applicationName: "Auto Cut",
-    keywords: ["background remover", "remove background", "image editing", "browser tool", "privacy", "offline"],
+    keywords: [
+        "background remover",
+        "remove background",
+        "remove background from image",
+        "free background remover",
+        "background remover online",
+        "image background remover",
+        "AI background removal",
+        "transparent background",
+        "remove bg",
+        "cut out image",
+        "image editing",
+        "browser tool",
+        "privacy",
+        "offline",
+        "no upload",
+    ],
     authors: [{ name: "Auto Cut" }],
     creator: "Auto Cut",
+    publisher: "Auto Cut",
+    category: "Technology",
+    alternates: {
+        canonical: "/",
+    },
+    robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+            index: true,
+            follow: true,
+            "max-video-preview": -1,
+            "max-image-preview": "large",
+            "max-snippet": -1,
+        },
+    },
     openGraph: {
         type: "website",
-        title: "Auto Cut — Background Remover",
-        description: "Remove image backgrounds directly in your browser — no data sent to any server.",
+        locale: "en_US",
+        url: "/",
+        title: "Auto Cut — Free Background Remover | Private & Offline",
+        description:
+            "Remove image backgrounds instantly in your browser for free. No uploads, no servers, no tracking — 100% private and works offline.",
         siteName: "Auto Cut",
         images: [
             {
                 url: "/og.png",
                 width: 1200,
                 height: 630,
-                alt: "Auto Cut — Background Remover",
+                alt: "Auto Cut — Free AI Background Remover that works offline in your browser",
                 type: "image/png",
             },
         ],
     },
     twitter: {
         card: "summary_large_image",
-        title: "Auto Cut — Background Remover",
-        description: "Remove image backgrounds directly in your browser — no data sent to any server.",
-        images: ["/og.png"],
+        title: "Auto Cut — Free Background Remover | Private & Offline",
+        description:
+            "Remove image backgrounds instantly in your browser for free. No uploads, no servers, no tracking — works offline.",
+        images: [
+            {
+                url: "/og.png",
+                alt: "Auto Cut — Free AI Background Remover",
+            },
+        ],
     },
     appleWebApp: {
         capable: true,

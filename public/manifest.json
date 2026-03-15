@@ -1,9 +1,12 @@
 {
-    "name": "Auto Cut",
+    "name": "Auto Cut — Free Background Remover",
     "short_name": "Auto Cut",
-    "description": "Remove image backgrounds directly in your browser — no data sent to any server.",
+    "description": "Remove image backgrounds instantly in your browser for free. AI-powered, 100% private, works offline — no uploads, no servers, no tracking.",
+    "id": "/auto-cut/",
     "start_url": "./",
     "scope": "./",
+    "lang": "en",
+    "dir": "ltr",
     "icons": [
         {
             "src": "./web-app-manifest-192x192.png",
@@ -33,7 +36,8 @@
     "theme_color": "#bec9ff",
     "background_color": "#bec9ff",
     "display": "standalone",
-    "orientation": "portrait",
+    "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+    "orientation": "any",
     "categories": ["utilities", "photo"],
     "prefer_related_applications": false
 }

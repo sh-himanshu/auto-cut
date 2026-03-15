@@ -1,5 +1,5 @@
 const CACHE_NAME = "auto-cut-v2";
-const PRECACHE_URLS = ["/auto-cut/", "/auto-cut/manifest.json"];
+const PRECACHE_URLS = ["/auto-cut/", "/auto-cut/changelog", "/auto-cut/manifest.json"];
 
 // File extensions that benefit from cache-first (immutable after build)
 const STATIC_EXTENSIONS = /\.(js|css|woff2?|ttf|png|jpg|jpeg|svg|ico|webp)$/;

@@ -7,6 +7,10 @@ import { Changelog } from "@/app/components/changelog";
 
 export const metadata: Metadata = {
     title: "Changelog",
+    description: "See what's new and improved in Auto Cut — the free, private, AI-powered background remover.",
+    alternates: {
+        canonical: "/changelog",
+    },
 };
 
 export default function ChangelogPage() {

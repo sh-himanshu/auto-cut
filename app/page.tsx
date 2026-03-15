@@ -4,9 +4,34 @@ import { ErrorBoundary } from "./components/error-boundary";
 import { Features } from "./components/features";
 import { Footer } from "./components/footer";
 
+const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "Auto Cut",
+    url: "https://sh-himanshu.github.io/auto-cut",
+    description:
+        "Remove image backgrounds instantly in your browser for free. No uploads, no servers, no tracking — 100% private and works offline.",
+    applicationCategory: "MultimediaApplication",
+    operatingSystem: "Any",
+    browserRequirements: "Requires a modern web browser with WebGPU or WebAssembly support",
+    offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "USD",
+    },
+    featureList: [
+        "AI-powered background removal",
+        "100% browser-based processing",
+        "No data uploaded to servers",
+        "Works offline",
+        "Free to use",
+    ],
+};
+
 export default function Home() {
     return (
         <>
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
             {/* SVG filter for grainy texture */}
             <svg className="hidden" aria-hidden="true">
                 <filter id="grainy">
