@@ -1,26 +1,54 @@
 {
-  "name": "auto-cut",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
-  },
-  "dependencies": {
-    "next": "16.2.0-canary.98",
-    "react": "19.2.4",
-    "react-dom": "19.2.4"
-  },
-  "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.2.0-canary.98",
-    "tailwindcss": "^4",
-    "typescript": "^5"
-  }
+    "name": "auto-cut",
+    "version": "0.1.0",
+    "private": true,
+    "packageManager": "pnpm@10.30.3",
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "lint": "eslint",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "commit": "cz",
+        "prepare": "husky"
+    },
+    "config": {
+        "commitizen": {
+            "path": "cz-conventional-changelog"
+        }
+    },
+    "lint-staged": {
+        "*.{js,jsx,ts,tsx,mjs}": [
+            "eslint --fix",
+            "prettier --write"
+        ],
+        "*.{json,css,md,yml,yaml}": [
+            "prettier --write"
+        ]
+    },
+    "dependencies": {
+        "next": "16.2.0-canary.98",
+        "react": "19.2.4",
+        "react-dom": "19.2.4"
+    },
+    "devDependencies": {
+        "@tailwindcss/postcss": "^4",
+        "@types/node": "^20",
+        "@types/react": "^19",
+        "@types/react-dom": "^19",
+        "eslint": "^9",
+        "eslint-config-next": "16.2.0-canary.98",
+        "tailwindcss": "^4",
+        "typescript": "^5",
+        "@commitlint/cli": "^20.4.3",
+        "@commitlint/config-conventional": "^20.4.3",
+        "commitizen": "^4.3.1",
+        "cz-conventional-changelog": "^3.3.0",
+        "eslint-config-prettier": "^10.1.8",
+        "husky": "^9.1.7",
+        "lint-staged": "^16.3.2",
+        "prettier": "^3.8.1",
+        "prettier-plugin-tailwindcss": "^0.7.2"
+    }
 }

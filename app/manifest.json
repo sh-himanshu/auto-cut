@@ -1,0 +1,39 @@
+{
+    "name": "Auto Cut",
+    "short_name": "Auto Cut",
+    "description": "Remove image backgrounds directly in your browser — no data sent to any server.",
+    "start_url": "/",
+    "scope": "/",
+    "id": "/",
+    "icons": [
+        {
+            "src": "/web-app-manifest-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/web-app-manifest-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/web-app-manifest-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/web-app-manifest-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ],
+    "theme_color": "#bec9ff",
+    "background_color": "#bec9ff",
+    "display": "standalone",
+    "orientation": "portrait-primary",
+    "categories": ["utilities", "photo"]
+}
