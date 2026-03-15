@@ -32,8 +32,8 @@ export function ProcessingView({ progress, status }: ProcessingViewProps) {
         <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, exit: { duration: 0.05 } }}
+            exit={{ opacity: 0, transition: { duration: 0.05 } }}
+            transition={{ duration: 0.3 }}
             className="flex flex-col items-center justify-center py-20"
         >
             {/* AI sparkle animation */}

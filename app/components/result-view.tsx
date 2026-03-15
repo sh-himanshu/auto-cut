@@ -46,8 +46,8 @@ export function ResultView({
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, exit: { duration: 0.05 } }}
+            exit={{ opacity: 0, transition: { duration: 0.05 } }}
+            transition={{ duration: 0.3 }}
             className="flex flex-col"
         >
             {/* Header */}
