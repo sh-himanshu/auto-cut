@@ -45,7 +45,7 @@ export function Header({ hideChangelog }: { hideChangelog?: boolean }) {
                     {!hideChangelog && (
                         <Link
                             href="/changelog"
-                            className="border-sand bg-surface text-stone hover:border-bronze hover:text-charcoal flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-all duration-300"
+                            className="border-sand bg-surface text-stone hover:border-bronze hover:text-charcoal flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-all duration-300"
                         >
                             <History className="h-4 w-4" strokeWidth={1.5} />
                             <span className="hidden sm:inline">Changelog</span>

@@ -89,7 +89,7 @@ export function HfTokenInput({ token, onTokenChange }: HfTokenInputProps) {
                         <button
                             onClick={handleSave}
                             disabled={!draft.trim()}
-                            className="border-sand text-stone hover:border-bronze hover:text-bronze flex h-8 w-8 items-center justify-center rounded-lg border transition-colors disabled:opacity-30"
+                            className="border-sand text-stone hover:border-bronze hover:text-bronze flex h-8 w-8 items-center justify-center rounded-lg border transition-colors disabled:cursor-not-allowed disabled:opacity-30"
                         >
                             <Check className="h-3.5 w-3.5" strokeWidth={1.5} />
                         </button>

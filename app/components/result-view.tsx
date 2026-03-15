@@ -52,7 +52,7 @@ export function ResultView({
         >
             {/* Header */}
             <div
-                className={`mb-6 flex gap-3 sm:mb-8 ${modelChanged ? "flex-col items-center" : "flex-row flex-wrap items-center justify-between"}`}
+                className={`mb-6 flex flex-wrap items-center gap-3 sm:mb-8 sm:flex-row sm:justify-between ${modelChanged ? "flex-col" : "flex-row justify-between"}`}
             >
                 <h3 className="text-charcoal flex items-center gap-2 font-serif text-xl font-medium">
                     <motion.span
@@ -84,7 +84,7 @@ export function ResultView({
                             nudge();
                             onReset();
                         }}
-                        className="border-charcoal bg-charcoal text-surface hover:bg-charcoal/90 flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-light transition-all duration-300 sm:px-4 sm:text-sm"
+                        className="flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs font-light text-red-600 transition-all duration-300 hover:border-red-500 hover:bg-red-500/20 sm:px-4 sm:text-sm dark:text-red-400"
                     >
                         <RotateCcw className="h-4 w-4" strokeWidth={1.5} />
                         Start Over

@@ -11,7 +11,7 @@ export function BackToHomeButton() {
         <Link
             href="/"
             onClick={nudge}
-            className="border-sand bg-surface text-stone hover:border-bronze hover:text-charcoal mb-10 flex w-fit items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-all duration-300"
+            className="border-sand bg-surface text-stone hover:border-bronze hover:text-charcoal mb-10 flex w-fit cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-all duration-300"
         >
             <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
             Back to Home

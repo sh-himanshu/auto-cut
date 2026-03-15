@@ -70,7 +70,7 @@ export function SampleImages({ onFileSelected }: SampleImagesProps) {
                         key={sample.label}
                         onClick={() => handleSampleClick(idx)}
                         disabled={loadingIdx !== null}
-                        className="group relative flex flex-col items-center gap-1.5"
+                        className="group relative flex cursor-pointer flex-col items-center gap-1.5 disabled:cursor-not-allowed"
                     >
                         <div className="border-sand group-hover:border-bronze group-hover:shadow-elegant-sm relative h-14 w-14 overflow-hidden rounded-xl border transition-all duration-300">
                             {loadingIdx === idx ? (
