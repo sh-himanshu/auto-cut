@@ -4,6 +4,8 @@ import "./globals.css";
 import { ServiceWorkerRegistrar } from "./components/service-worker-registrar";
 import { ThemeProvider } from "./components/theme-provider";
 
+const BASE_PATH = process.env.NODE_ENV === "development" ? "" : "/auto-cut";
+
 const inter = Inter({
     variable: "--font-inter",
     subsets: ["latin"],
@@ -119,8 +121,8 @@ export default function RootLayout({
             suppressHydrationWarning
         >
             <head>
-                <link rel="manifest" href="/auto-cut/manifest.json" />
-                <link rel="icon" href="/auto-cut/favicon.ico" sizes="any" />
+                <link rel="manifest" href={`${BASE_PATH}/manifest.json`} />
+                <link rel="icon" href={`${BASE_PATH}/favicon.ico`} sizes="any" />
                 <script
                     dangerouslySetInnerHTML={{
                         __html: `(function(){try{var t=localStorage.getItem("theme");if(t==="dark"||(!t&&matchMedia("(prefers-color-scheme:dark)").matches))document.documentElement.classList.add("dark")}catch(e){}})()`,

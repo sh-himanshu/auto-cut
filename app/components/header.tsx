@@ -18,7 +18,7 @@ export function Header({ hideChangelog }: { hideChangelog?: boolean }) {
         <header className="border-sand/50 bg-base/80 sticky top-0 z-50 w-full border-b px-6 py-6 backdrop-blur-md">
             <div className="relative z-10 mx-auto flex max-w-6xl items-center justify-between">
                 {/* Brand */}
-                <div className="group flex cursor-pointer items-center gap-3">
+                <Link href="/" className="group flex cursor-pointer items-center gap-3">
                     <AnimatePresence mode="wait" initial={false}>
                         <motion.div
                             key={theme}
@@ -37,7 +37,7 @@ export function Header({ hideChangelog }: { hideChangelog?: boolean }) {
                         </motion.div>
                     </AnimatePresence>
                     <span className="text-charcoal font-serif text-2xl font-medium tracking-wide italic">Auto Cut</span>
-                </div>
+                </Link>
 
                 {/* Right nav */}
                 <div className="flex items-center gap-4">

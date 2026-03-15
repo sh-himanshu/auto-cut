@@ -46,19 +46,21 @@ export function ResultView({
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.4 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, exit: { duration: 0.05 } }}
             className="flex flex-col"
         >
             {/* Header */}
-            <div className="mb-6 flex flex-col gap-3 sm:mb-8 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+            <div
+                className={`mb-6 flex gap-3 sm:mb-8 ${modelChanged ? "flex-col items-center" : "flex-row flex-wrap items-center justify-between"}`}
+            >
                 <h3 className="text-charcoal flex items-center gap-2 font-serif text-xl font-medium">
                     <motion.span
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         transition={{ delay: 0.2, type: "spring" }}
                     >
-                        <Check className="text-bronze h-5 w-5" strokeWidth={1.5} />
+                        <Check className="h-5 w-5 text-green-500" strokeWidth={1.5} />
                     </motion.span>
                     Complete
                 </h3>
@@ -82,7 +84,7 @@ export function ResultView({
                             nudge();
                             onReset();
                         }}
-                        className="text-stone hover:text-charcoal flex items-center gap-2 text-sm font-light transition-colors duration-300"
+                        className="border-charcoal bg-charcoal text-surface hover:bg-charcoal/90 flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-light transition-all duration-300 sm:px-4 sm:text-sm"
                     >
                         <RotateCcw className="h-4 w-4" strokeWidth={1.5} />
                         Start Over

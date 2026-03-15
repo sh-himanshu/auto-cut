@@ -7,6 +7,66 @@ import { getHfToken, setHfToken, clearHfToken } from "@/app/lib/hf-token";
 
 export type ProcessingStatus = "idle" | "loading-model" | "processing" | "done" | "error";
 
+/** Classify raw errors into user-friendly messages with debug context. */
+function classifyError(err: unknown, modelId: ModelId): string {
+    const raw = err instanceof Error ? err.message : String(err);
+    const lower = raw.toLowerCase();
+
+    // Out of memory / allocation failures (common on mobile)
+    if (
+        lower.includes("out of memory") ||
+        lower.includes("oom") ||
+        lower.includes("allocation") ||
+        lower.includes("memory") ||
+        lower.includes("arraybuffer")
+    ) {
+        return `Out of memory — this image may be too large for your device. Try a smaller image. [${modelId}: ${raw}]`;
+    }
+
+    // WebGPU / WebAssembly failures
+    if (
+        lower.includes("webgpu") ||
+        lower.includes("gpu") ||
+        lower.includes("device lost") ||
+        lower.includes("gpudevice")
+    ) {
+        return `GPU processing failed — your browser may not fully support WebGPU. Try the IMG.LY model instead. [${modelId}: ${raw}]`;
+    }
+
+    if (lower.includes("wasm") || lower.includes("webassembly") || lower.includes("compile")) {
+        return `WebAssembly error — your browser may not support the required features. [${modelId}: ${raw}]`;
+    }
+
+    // Network errors (model download)
+    if (
+        lower.includes("network") ||
+        lower.includes("fetch") ||
+        lower.includes("failed to load") ||
+        lower.includes("networkerror") ||
+        lower.includes("offline")
+    ) {
+        return `Network error — could not download the model. Check your connection and try again. [${modelId}: ${raw}]`;
+    }
+
+    // Auth errors
+    if (lower.includes("401") || lower.includes("403") || lower.includes("unauthorized") || lower.includes("token")) {
+        return `Authentication failed — your HuggingFace token may be invalid or expired. [${modelId}: ${raw}]`;
+    }
+
+    // Canvas errors
+    if (lower.includes("canvas") || lower.includes("context")) {
+        return `Canvas error — the image dimensions may exceed your browser's limits. Try a smaller image. [${modelId}: ${raw}]`;
+    }
+
+    // Image format/load errors
+    if (lower.includes("image") && (lower.includes("decode") || lower.includes("load") || lower.includes("corrupt"))) {
+        return `Could not read this image — the file may be corrupt or in an unsupported format. [${modelId}: ${raw}]`;
+    }
+
+    // Fallback: include the raw message for debugging
+    return `Processing failed with ${modelId} model — ${raw}`;
+}
+
 interface BackgroundRemovalState {
     status: ProcessingStatus;
     progress: number;
@@ -134,13 +194,15 @@ export function useBackgroundRemoval() {
                     processedModelId: prev.modelId,
                 }));
             } catch (err) {
-                // Revoke the originalUrl we just created on failure
-                revokeUrl(originalUrl);
+                console.error(`[auto-cut] processImage failed (model=${state.modelId}):`, err);
+                // Dispose adapter so retry uses a fresh instance
+                const { disposeAdapter } = await import("@/app/lib/bg-removal");
+                disposeAdapter(state.modelId, state.hfToken ?? undefined);
+                // Keep originalUrl so error view can show it and allow retry
                 setState((prev) => ({
                     ...prev,
                     status: "error",
-                    originalUrl: null,
-                    error: err instanceof Error ? err.message : "Processing failed",
+                    error: classifyError(err, state.modelId),
                 }));
             }
         },
@@ -185,10 +247,13 @@ export function useBackgroundRemoval() {
                 processedModelId: prev.modelId,
             }));
         } catch (err) {
+            console.error(`[auto-cut] reprocess failed (model=${state.modelId}):`, err);
+            const { disposeAdapter } = await import("@/app/lib/bg-removal");
+            disposeAdapter(state.modelId, state.hfToken ?? undefined);
             setState((prev) => ({
                 ...prev,
                 status: "error",
-                error: err instanceof Error ? err.message : "Processing failed",
+                error: classifyError(err, state.modelId),
             }));
         }
     }, [state.modelId, state.hfToken]);
@@ -243,6 +308,11 @@ export function useBackgroundRemoval() {
         }
     }, [state.exportSettings]);
 
+    const retry = useCallback(async () => {
+        if (!originalFileRef.current) return;
+        await processImage(originalFileRef.current);
+    }, [processImage]);
+
     return {
         ...state,
         setModel,
@@ -250,6 +320,7 @@ export function useBackgroundRemoval() {
         updateHfToken,
         processImage,
         reprocess,
+        retry,
         reset,
         downloadResult,
         copyResult,

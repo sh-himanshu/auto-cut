@@ -1,9 +1,8 @@
-import Link from "next/link";
 import type { Metadata } from "next";
-import { ArrowLeft } from "lucide-react";
 import { Header } from "@/app/components/header";
 import { Footer } from "@/app/components/footer";
 import { Changelog } from "@/app/components/changelog";
+import { BackToHomeButton } from "@/app/components/back-to-home-button";
 
 export const metadata: Metadata = {
     title: "Changelog",
@@ -23,13 +22,7 @@ export default function ChangelogPage() {
             <Header hideChangelog />
 
             <main className="relative z-10 mx-auto flex w-full max-w-6xl grow flex-col px-6 pt-20 pb-24">
-                <Link
-                    href="/"
-                    className="border-sand bg-surface text-stone hover:border-bronze hover:text-charcoal mb-10 flex w-fit items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-all duration-300"
-                >
-                    <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
-                    Back to Home
-                </Link>
+                <BackToHomeButton />
 
                 <div className="mb-12 text-center">
                     <h1 className="text-charcoal mb-4 font-serif text-4xl font-medium tracking-tight md:text-5xl">
