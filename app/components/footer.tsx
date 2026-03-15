@@ -19,7 +19,16 @@ export function Footer() {
                         Star on GitHub
                     </a>
                     <span className="text-stone flex items-center gap-1.5 text-sm">
-                        Built with <Heart className="text-bronze h-3.5 w-3.5" strokeWidth={1.5} fill="currentColor" />
+                        Built with <Heart className="text-bronze h-3.5 w-3.5" strokeWidth={1.5} fill="currentColor" />{" "}
+                        by{" "}
+                        <a
+                            href="https://github.com/sh-himanshu"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-stone hover:text-charcoal underline underline-offset-2 transition-colors duration-300"
+                        >
+                            sh-himanshu
+                        </a>
                     </span>
                 </div>
             </div>

@@ -2,7 +2,7 @@
 
 import { useCallback, useRef, useState } from "react";
 import { motion } from "motion/react";
-import { ImageIcon } from "lucide-react";
+import { ImageIcon, Loader2 } from "lucide-react";
 import { SampleImages } from "./sample-images";
 
 interface DropzoneProps {
@@ -16,6 +16,7 @@ const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25 MB
 export function Dropzone({ onFileSelected, disabled }: DropzoneProps) {
     const [isDragging, setIsDragging] = useState(false);
     const [fileError, setFileError] = useState<string | null>(null);
+    const [isUploading, setIsUploading] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
 
     const handleFile = useCallback(
@@ -33,6 +34,7 @@ export function Dropzone({ onFileSelected, disabled }: DropzoneProps) {
                 setFileError("File is empty.");
                 return;
             }
+            setIsUploading(true);
             onFileSelected(file);
         },
         [onFileSelected],
@@ -113,43 +115,55 @@ export function Dropzone({ onFileSelected, disabled }: DropzoneProps) {
                     className="hidden"
                 />
 
-                <motion.div
-                    className="text-stone group-hover:text-bronze mb-4 rounded-full p-4 transition-colors duration-500"
-                    animate={isDragging ? { scale: 1.15, rotate: 5 } : { scale: 1, rotate: 0 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                >
-                    <ImageIcon className="h-10 w-10" strokeWidth={1} />
-                </motion.div>
+                {isUploading ? (
+                    <div className="flex flex-col items-center justify-center py-4">
+                        <Loader2 className="text-bronze mb-4 h-10 w-10 animate-spin" strokeWidth={1.25} />
+                        <h3 className="text-charcoal mb-2 font-serif text-xl font-medium tracking-wide">
+                            Preparing image&hellip;
+                        </h3>
+                        <p className="text-stone text-sm font-light">Starting background removal</p>
+                    </div>
+                ) : (
+                    <>
+                        <motion.div
+                            className="text-stone group-hover:text-bronze mb-4 rounded-full p-4 transition-colors duration-500"
+                            animate={isDragging ? { scale: 1.15, rotate: 5 } : { scale: 1, rotate: 0 }}
+                            transition={{ type: "spring", stiffness: 300 }}
+                        >
+                            <ImageIcon className="h-10 w-10" strokeWidth={1} />
+                        </motion.div>
 
-                <h3 className="text-charcoal mb-2 font-serif text-xl font-medium tracking-wide">
-                    Select an image to begin
-                </h3>
-                <p className="text-stone mb-8 text-sm font-light">Drag and drop, or click to browse</p>
+                        <h3 className="text-charcoal mb-2 font-serif text-xl font-medium tracking-wide">
+                            Select an image to begin
+                        </h3>
+                        <p className="text-stone mb-8 text-sm font-light">Drag and drop, or click to browse</p>
 
-                <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="btn-elegant bg-charcoal text-surface flex items-center gap-2 rounded-full px-8 py-3 font-light tracking-wide"
-                >
-                    Upload Image
-                </motion.button>
+                        <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="btn-elegant bg-charcoal text-surface flex items-center gap-2 rounded-full px-8 py-3 font-light tracking-wide"
+                        >
+                            Upload Image
+                        </motion.button>
 
-                <div className="text-stone mt-8 flex gap-6 text-sm font-light tracking-widest uppercase">
-                    <span>PNG</span>
-                    <span>&middot;</span>
-                    <span>JPG</span>
-                    <span>&middot;</span>
-                    <span>WEBP</span>
-                </div>
+                        <div className="text-stone mt-8 flex gap-6 text-sm font-light tracking-widest uppercase">
+                            <span>PNG</span>
+                            <span>&middot;</span>
+                            <span>JPG</span>
+                            <span>&middot;</span>
+                            <span>WEBP</span>
+                        </div>
 
-                {fileError && (
-                    <p role="alert" className="mt-4 text-sm font-light text-red-500">
-                        {fileError}
-                    </p>
+                        {fileError && (
+                            <p role="alert" className="mt-4 text-sm font-light text-red-500">
+                                {fileError}
+                            </p>
+                        )}
+                    </>
                 )}
             </div>
 
-            <SampleImages onFileSelected={onFileSelected} />
+            <SampleImages onFileSelected={handleFile} />
         </motion.div>
     );
 }

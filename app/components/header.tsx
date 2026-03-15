@@ -9,7 +9,7 @@ import { useTheme } from "./theme-provider";
 import logoLight from "@/brand/autocut-logo-light.png";
 import logoDark from "@/brand/autocut-logo-dark.png";
 
-export function Header() {
+export function Header({ hideChangelog }: { hideChangelog?: boolean }) {
     const { theme, toggleTheme } = useTheme();
 
     return (
@@ -40,13 +40,15 @@ export function Header() {
                 {/* Right nav */}
                 <div className="flex items-center gap-4">
                     {/* Changelog */}
-                    <Link
-                        href="/changelog"
-                        className="border-sand bg-surface text-stone hover:border-bronze hover:text-charcoal flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-all duration-300"
-                    >
-                        <History className="h-4 w-4" strokeWidth={1.5} />
-                        <span className="hidden sm:inline">Changelog</span>
-                    </Link>
+                    {!hideChangelog && (
+                        <Link
+                            href="/changelog"
+                            className="border-sand bg-surface text-stone hover:border-bronze hover:text-charcoal flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-all duration-300"
+                        >
+                            <History className="h-4 w-4" strokeWidth={1.5} />
+                            <span className="hidden sm:inline">Changelog</span>
+                        </Link>
+                    )}
 
                     {/* Star on GitHub — hidden on mobile */}
                     <a

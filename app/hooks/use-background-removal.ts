@@ -23,6 +23,16 @@ function revokeUrl(url: string | null) {
     if (url) URL.revokeObjectURL(url);
 }
 
+const MIN_PROCESSING_MS = 800;
+
+function elapsedSince(start: number) {
+    return performance.now() - start;
+}
+
+function delay(ms: number) {
+    return new Promise<void>((resolve) => setTimeout(resolve, ms));
+}
+
 export function useBackgroundRemoval() {
     const [state, setState] = useState<BackgroundRemovalState>({
         status: "idle",
@@ -90,6 +100,7 @@ export function useBackgroundRemoval() {
             revokeUrl(resultUrlRef.current);
 
             const originalUrl = URL.createObjectURL(file);
+            const startTime = performance.now();
             setState((prev) => ({
                 ...prev,
                 status: "loading-model",
@@ -108,6 +119,10 @@ export function useBackgroundRemoval() {
                 const resultBlob = await adapter.removeBackground(file, (progress) => {
                     setState((prev) => ({ ...prev, progress: Math.max(prev.progress, progress) }));
                 });
+
+                // Ensure processing view is visible for at least MIN_PROCESSING_MS
+                const remaining = MIN_PROCESSING_MS - elapsedSince(startTime);
+                if (remaining > 0) await delay(remaining);
 
                 resultBlobRef.current = resultBlob;
                 const resultUrl = URL.createObjectURL(resultBlob);
@@ -137,6 +152,7 @@ export function useBackgroundRemoval() {
 
         revokeUrl(resultUrlRef.current);
 
+        const startTime = performance.now();
         setState((prev) => ({
             ...prev,
             status: "loading-model",
@@ -154,6 +170,10 @@ export function useBackgroundRemoval() {
             const resultBlob = await adapter.removeBackground(originalFileRef.current!, (progress) => {
                 setState((prev) => ({ ...prev, progress: Math.max(prev.progress, progress) }));
             });
+
+            // Ensure processing view is visible for at least MIN_PROCESSING_MS
+            const remaining = MIN_PROCESSING_MS - elapsedSince(startTime);
+            if (remaining > 0) await delay(remaining);
 
             resultBlobRef.current = resultBlob;
             const resultUrl = URL.createObjectURL(resultBlob);
