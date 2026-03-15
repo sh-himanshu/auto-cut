@@ -1,8 +1,10 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { AnimatePresence } from "motion/react";
 import { useBackgroundRemoval } from "@/app/hooks/use-background-removal";
 import { MODEL_OPTIONS } from "@/app/lib/bg-removal";
+import { useHaptics } from "@/app/hooks/use-haptics";
 import { ModelSelector } from "./model-selector";
 import { Dropzone } from "./dropzone";
 import { ProcessingView } from "./processing-view";
@@ -28,6 +30,18 @@ export function AppContainer() {
         downloadResult,
         copyResult,
     } = useBackgroundRemoval();
+
+    const { success: hapticSuccess, error: hapticError } = useHaptics();
+    const prevStatusRef = useRef(status);
+
+    useEffect(() => {
+        const prev = prevStatusRef.current;
+        prevStatusRef.current = status;
+        if (prev !== status) {
+            if (status === "done") hapticSuccess();
+            if (status === "error") hapticError();
+        }
+    }, [status, hapticSuccess, hapticError]);
 
     const isProcessing = status === "loading-model" || status === "processing";
     const modelChanged = status === "done" && processedModelId !== null && modelId !== processedModelId;

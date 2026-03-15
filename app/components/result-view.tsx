@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import { Check, RotateCcw, Copy, Download, RefreshCw } from "lucide-react";
 import { OutputOptions } from "./output-options";
 import type { ExportSettings } from "@/app/lib/export-image";
+import { useHaptics } from "@/app/hooks/use-haptics";
 
 interface ResultViewProps {
     originalUrl: string;
@@ -32,9 +33,11 @@ export function ResultView({
     newModelName,
 }: ResultViewProps) {
     const [copied, setCopied] = useState(false);
+    const { success, nudge } = useHaptics();
 
     const handleCopy = () => {
         onCopy();
+        success();
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
     };
@@ -64,7 +67,10 @@ export function ResultView({
                         <motion.button
                             initial={{ opacity: 0, x: 10 }}
                             animate={{ opacity: 1, x: 0 }}
-                            onClick={onReprocess}
+                            onClick={() => {
+                                nudge();
+                                onReprocess();
+                            }}
                             className="border-bronze/30 bg-bronze/5 text-bronze hover:border-bronze hover:bg-bronze/10 flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm font-light transition-all duration-300"
                         >
                             <RefreshCw className="h-3.5 w-3.5" strokeWidth={1.5} />
@@ -72,7 +78,10 @@ export function ResultView({
                         </motion.button>
                     )}
                     <button
-                        onClick={onReset}
+                        onClick={() => {
+                            nudge();
+                            onReset();
+                        }}
                         className="text-stone hover:text-charcoal flex items-center gap-2 text-sm font-light transition-colors duration-300"
                     >
                         <RotateCcw className="h-4 w-4" strokeWidth={1.5} />
@@ -156,7 +165,10 @@ export function ResultView({
                 <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    onClick={onDownload}
+                    onClick={() => {
+                        success();
+                        onDownload();
+                    }}
                     className="btn-elegant bg-charcoal text-surface flex items-center gap-2 rounded-full px-8 py-2.5 font-light tracking-wide"
                 >
                     <Download className="h-4 w-4" strokeWidth={1.5} />

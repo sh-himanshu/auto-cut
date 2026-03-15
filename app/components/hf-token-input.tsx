@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { KeyRound, Eye, EyeOff, ExternalLink, X, Check } from "lucide-react";
+import { useHaptics } from "@/app/hooks/use-haptics";
 
 interface HfTokenInputProps {
     token: string | null;
@@ -13,12 +14,14 @@ export function HfTokenInput({ token, onTokenChange }: HfTokenInputProps) {
     const [editing, setEditing] = useState(false);
     const [draft, setDraft] = useState("");
     const [showToken, setShowToken] = useState(false);
+    const { success, nudge } = useHaptics();
 
     const hasToken = !!token;
 
     const handleSave = () => {
         const trimmed = draft.trim();
         if (trimmed) {
+            success();
             onTokenChange(trimmed);
             setDraft("");
             setEditing(false);
@@ -26,6 +29,7 @@ export function HfTokenInput({ token, onTokenChange }: HfTokenInputProps) {
     };
 
     const handleRemove = () => {
+        nudge();
         onTokenChange(null);
         setDraft("");
         setEditing(false);

@@ -5,12 +5,14 @@ import Link from "next/link";
 import { Moon, Sun, Star, History } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useTheme } from "./theme-provider";
+import { useHaptics } from "@/app/hooks/use-haptics";
 
 import logoLight from "@/brand/autocut-logo-light.png";
 import logoDark from "@/brand/autocut-logo-dark.png";
 
 export function Header({ hideChangelog }: { hideChangelog?: boolean }) {
     const { theme, toggleTheme } = useTheme();
+    const { nudge } = useHaptics();
 
     return (
         <header className="border-sand/50 bg-base/80 sticky top-0 z-50 w-full border-b px-6 py-6 backdrop-blur-md">
@@ -63,7 +65,10 @@ export function Header({ hideChangelog }: { hideChangelog?: boolean }) {
 
                     {/* Theme toggle */}
                     <button
-                        onClick={toggleTheme}
+                        onClick={() => {
+                            nudge();
+                            toggleTheme();
+                        }}
                         className="border-sand bg-surface text-stone hover:border-bronze hover:text-charcoal relative flex h-9 w-9 items-center justify-center rounded-full border transition-all duration-300"
                         aria-label="Toggle Dark Mode"
                     >

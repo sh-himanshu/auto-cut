@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { AlertCircle, Loader2 } from "lucide-react";
+import { useHaptics } from "@/app/hooks/use-haptics";
 
 interface SampleImagesProps {
     onFileSelected: (file: File) => void;
@@ -33,10 +34,12 @@ const SAMPLES = [
 export function SampleImages({ onFileSelected }: SampleImagesProps) {
     const [loadingIdx, setLoadingIdx] = useState<number | null>(null);
     const [errorIdx, setErrorIdx] = useState<number | null>(null);
+    const { nudge, error: hapticError } = useHaptics();
 
     const handleSampleClick = useCallback(
         async (idx: number) => {
             if (loadingIdx !== null) return;
+            nudge();
             setLoadingIdx(idx);
             setErrorIdx(null);
             try {
@@ -49,12 +52,13 @@ export function SampleImages({ onFileSelected }: SampleImagesProps) {
                 });
                 onFileSelected(file);
             } catch {
+                hapticError();
                 setErrorIdx(idx);
             } finally {
                 setLoadingIdx(null);
             }
         },
-        [loadingIdx, onFileSelected],
+        [loadingIdx, onFileSelected, nudge, hapticError],
     );
 
     return (

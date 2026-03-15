@@ -4,6 +4,7 @@ import { useCallback, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { ImageIcon, Loader2 } from "lucide-react";
 import { SampleImages } from "./sample-images";
+import { useHaptics } from "@/app/hooks/use-haptics";
 
 interface DropzoneProps {
     onFileSelected: (file: File) => void;
@@ -18,26 +19,31 @@ export function Dropzone({ onFileSelected, disabled }: DropzoneProps) {
     const [fileError, setFileError] = useState<string | null>(null);
     const [isUploading, setIsUploading] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
+    const { success, error: hapticError, nudge } = useHaptics();
 
     const handleFile = useCallback(
         (file: File) => {
             setFileError(null);
             if (!ACCEPTED_TYPES.includes(file.type)) {
                 setFileError("Unsupported format. Please use PNG, JPEG, or WEBP.");
+                hapticError();
                 return;
             }
             if (file.size > MAX_FILE_SIZE) {
                 setFileError(`File too large (${(file.size / 1024 / 1024).toFixed(1)} MB). Maximum is 25 MB.`);
+                hapticError();
                 return;
             }
             if (file.size === 0) {
                 setFileError("File is empty.");
+                hapticError();
                 return;
             }
             setIsUploading(true);
+            success();
             onFileSelected(file);
         },
-        [onFileSelected],
+        [onFileSelected, hapticError, success],
     );
 
     const handleDrop = useCallback(
@@ -45,17 +51,22 @@ export function Dropzone({ onFileSelected, disabled }: DropzoneProps) {
             e.preventDefault();
             e.stopPropagation();
             setIsDragging(false);
+            nudge();
             const file = e.dataTransfer.files[0];
             if (file) handleFile(file);
         },
-        [handleFile],
+        [handleFile, nudge],
     );
 
-    const handleDragOver = useCallback((e: React.DragEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setIsDragging(true);
-    }, []);
+    const handleDragOver = useCallback(
+        (e: React.DragEvent) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!isDragging) nudge();
+            setIsDragging(true);
+        },
+        [isDragging, nudge],
+    );
 
     const handleDragLeave = useCallback((e: React.DragEvent) => {
         e.preventDefault();

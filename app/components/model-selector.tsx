@@ -3,6 +3,7 @@
 import { motion } from "motion/react";
 import { MODEL_OPTIONS, type ModelId } from "@/app/lib/bg-removal";
 import { HfTokenInput } from "./hf-token-input";
+import { useHaptics } from "@/app/hooks/use-haptics";
 
 interface ModelSelectorProps {
     selected: ModelId;
@@ -13,6 +14,7 @@ interface ModelSelectorProps {
 }
 
 export function ModelSelector({ selected, onChange, disabled, hfToken, onHfTokenChange }: ModelSelectorProps) {
+    const { nudge } = useHaptics();
     const selectedModel = MODEL_OPTIONS.find((m) => m.id === selected);
     const needsToken = selectedModel?.requiresToken && !hfToken;
 
@@ -36,7 +38,10 @@ export function ModelSelector({ selected, onChange, disabled, hfToken, onHfToken
                     return (
                         <button
                             key={model.id}
-                            onClick={() => onChange(model.id)}
+                            onClick={() => {
+                                nudge();
+                                onChange(model.id);
+                            }}
                             disabled={disabled}
                             className={`relative z-10 flex flex-1 flex-col items-center gap-0.5 rounded-full px-3 py-2.5 transition-colors duration-300 ${
                                 disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"

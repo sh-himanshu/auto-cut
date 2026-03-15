@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Settings2, ChevronDown } from "lucide-react";
 import type { ExportSettings } from "@/app/lib/export-image";
+import { useHaptics } from "@/app/hooks/use-haptics";
 
 interface OutputOptionsProps {
     settings: ExportSettings;
@@ -25,6 +26,7 @@ const FORMAT_OPTIONS: { label: string; value: ExportSettings["format"] }[] = [
 export function OutputOptions({ settings, onChange }: OutputOptionsProps) {
     const [expanded, setExpanded] = useState(false);
     const [customColor, setCustomColor] = useState("#4a90d9");
+    const { nudge } = useHaptics();
 
     const isCustomBg =
         settings.backgroundColor !== null && !BG_PRESETS.some((p) => p.value === settings.backgroundColor);
@@ -32,7 +34,10 @@ export function OutputOptions({ settings, onChange }: OutputOptionsProps) {
     return (
         <div className="border-sand mt-6 border-t pt-6">
             <button
-                onClick={() => setExpanded(!expanded)}
+                onClick={() => {
+                    nudge();
+                    setExpanded(!expanded);
+                }}
                 className="text-stone hover:text-charcoal flex items-center gap-2 text-sm font-light transition-colors duration-300"
             >
                 <Settings2 className="h-4 w-4" strokeWidth={1.5} />
@@ -63,7 +68,10 @@ export function OutputOptions({ settings, onChange }: OutputOptionsProps) {
                                         return (
                                             <button
                                                 key={preset.label}
-                                                onClick={() => onChange({ ...settings, backgroundColor: preset.value })}
+                                                onClick={() => {
+                                                    nudge();
+                                                    onChange({ ...settings, backgroundColor: preset.value });
+                                                }}
                                                 className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-light transition-all duration-300 ${
                                                     isActive
                                                         ? "border-bronze text-charcoal"
@@ -116,6 +124,7 @@ export function OutputOptions({ settings, onChange }: OutputOptionsProps) {
                                             <button
                                                 key={fmt.value}
                                                 onClick={() => {
+                                                    nudge();
                                                     const newBg =
                                                         fmt.value === "jpeg" && settings.backgroundColor === null
                                                             ? "#ffffff"

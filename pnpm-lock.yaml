@@ -29,6 +29,9 @@ importers:
       react-dom:
         specifier: 19.2.4
         version: 19.2.4(react@19.2.4)
+      web-haptics:
+        specifier: ^0.0.6
+        version: 0.0.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
     devDependencies:
       '@commitlint/cli':
         specifier: ^20.4.3
@@ -2837,6 +2840,23 @@ packages:
 
   wcwidth@1.0.1:
     resolution: {integrity: sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==}
+
+  web-haptics@0.0.6:
+    resolution: {integrity: sha512-eCzcf1LDi20+Fr0x9V3OkX92k0gxEQXaHajmhXHitsnk6SxPeshv8TBtBRqxyst8HI1uf2FyFVE7QS3jo1gkrw==}
+    peerDependencies:
+      react: '>=18'
+      react-dom: '>=18'
+      svelte: '>=4'
+      vue: '>=3'
+    peerDependenciesMeta:
+      react:
+        optional: true
+      react-dom:
+        optional: true
+      svelte:
+        optional: true
+      vue:
+        optional: true
 
   which-boxed-primitive@1.1.1:
     resolution: {integrity: sha512-TbX3mj8n0odCBFVlY8AxkqcHASw3L60jIuF8jFP78az3C2YhmGvqbHBpAjTRH2/xqYunrJ9g1jSyjCjpoWzIAA==}
@@ -5850,6 +5870,11 @@ snapshots:
   wcwidth@1.0.1:
     dependencies:
       defaults: 1.0.4
+
+  web-haptics@0.0.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+    optionalDependencies:
+      react: 19.2.4
+      react-dom: 19.2.4(react@19.2.4)
 
   which-boxed-primitive@1.1.1:
     dependencies:
