@@ -41,12 +41,18 @@ export function ProcessingView({ progress, status }: ProcessingViewProps) {
                 />
             </div>
 
-            <h3 className="text-charcoal mb-2 font-serif text-xl font-medium italic">{title}</h3>
-            <p className="text-stone text-sm font-light">{subtitle}</p>
+            <div aria-live="polite">
+                <h3 className="text-charcoal mb-2 font-serif text-xl font-medium italic">{title}</h3>
+                <p className="text-stone text-sm font-light">{subtitle}</p>
+            </div>
 
             {/* Progress bar */}
             {isLoadingModel ? (
-                <div className="bg-sand relative mt-8 h-1 w-64 overflow-hidden rounded-full">
+                <div
+                    role="progressbar"
+                    aria-label="Loading AI model"
+                    className="bg-sand relative mt-8 h-1 w-64 overflow-hidden rounded-full"
+                >
                     <motion.div
                         className="bg-bronze absolute top-0 left-0 h-full w-1/3 rounded-full"
                         animate={{ x: ["-100%", "300%"] }}
@@ -55,7 +61,14 @@ export function ProcessingView({ progress, status }: ProcessingViewProps) {
                 </div>
             ) : (
                 <>
-                    <div className="bg-sand relative mt-8 h-1 w-64 overflow-hidden rounded-full">
+                    <div
+                        role="progressbar"
+                        aria-valuenow={percent}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        aria-label={`Processing image: ${percent}%`}
+                        className="bg-sand relative mt-8 h-1 w-64 overflow-hidden rounded-full"
+                    >
                         <motion.div
                             className="bg-bronze absolute top-0 left-0 h-full rounded-full"
                             initial={{ width: "0%" }}

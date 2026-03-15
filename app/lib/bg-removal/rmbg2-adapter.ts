@@ -61,7 +61,14 @@ export class Rmbg2Adapter implements BackgroundRemovalAdapter {
         }
     }
 
-    dispose() {
+    async dispose() {
+        if (this.remover && typeof this.remover.dispose === "function") {
+            try {
+                await this.remover.dispose();
+            } catch {
+                // Best-effort cleanup
+            }
+        }
         this.remover = null;
     }
 }

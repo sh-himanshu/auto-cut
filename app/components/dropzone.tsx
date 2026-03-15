@@ -11,16 +11,29 @@ interface DropzoneProps {
 }
 
 const ACCEPTED_TYPES = ["image/png", "image/jpeg", "image/webp"];
+const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25 MB
 
 export function Dropzone({ onFileSelected, disabled }: DropzoneProps) {
     const [isDragging, setIsDragging] = useState(false);
+    const [fileError, setFileError] = useState<string | null>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
     const handleFile = useCallback(
         (file: File) => {
-            if (ACCEPTED_TYPES.includes(file.type)) {
-                onFileSelected(file);
+            setFileError(null);
+            if (!ACCEPTED_TYPES.includes(file.type)) {
+                setFileError("Unsupported format. Please use PNG, JPEG, or WEBP.");
+                return;
             }
+            if (file.size > MAX_FILE_SIZE) {
+                setFileError(`File too large (${(file.size / 1024 / 1024).toFixed(1)} MB). Maximum is 25 MB.`);
+                return;
+            }
+            if (file.size === 0) {
+                setFileError("File is empty.");
+                return;
+            }
+            onFileSelected(file);
         },
         [onFileSelected],
     );
@@ -65,11 +78,25 @@ export function Dropzone({ onFileSelected, disabled }: DropzoneProps) {
             className="flex w-full flex-col items-center"
         >
             <div
+                role="button"
+                tabIndex={disabled ? -1 : 0}
+                aria-label="Upload an image for background removal"
+                aria-disabled={disabled || undefined}
                 onDrop={disabled ? undefined : handleDrop}
                 onDragOver={disabled ? undefined : handleDragOver}
                 onDragEnter={disabled ? undefined : handleDragOver}
                 onDragLeave={disabled ? undefined : handleDragLeave}
                 onClick={disabled ? undefined : () => inputRef.current?.click()}
+                onKeyDown={
+                    disabled
+                        ? undefined
+                        : (e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                  e.preventDefault();
+                                  inputRef.current?.click();
+                              }
+                          }
+                }
                 className={`group relative flex w-full flex-col items-center justify-center overflow-hidden rounded-[1.5rem] border-2 border-dashed px-6 py-20 transition-all duration-500 ${
                     disabled
                         ? "border-sand/50 bg-surface/50 cursor-not-allowed opacity-50"
@@ -114,6 +141,12 @@ export function Dropzone({ onFileSelected, disabled }: DropzoneProps) {
                     <span>&middot;</span>
                     <span>WEBP</span>
                 </div>
+
+                {fileError && (
+                    <p role="alert" className="mt-4 text-sm font-light text-red-500">
+                        {fileError}
+                    </p>
+                )}
             </div>
 
             <SampleImages onFileSelected={onFileSelected} />

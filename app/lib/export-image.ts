@@ -20,8 +20,18 @@ export async function exportImage(resultBlob: Blob, settings: ExportSettings): P
     const url = URL.createObjectURL(resultBlob);
 
     await new Promise<void>((resolve, reject) => {
-        img.onload = () => resolve();
-        img.onerror = () => reject(new Error("Failed to load image for export"));
+        const timeout = setTimeout(() => {
+            URL.revokeObjectURL(url);
+            reject(new Error("Image load timed out"));
+        }, 10_000);
+        img.onload = () => {
+            clearTimeout(timeout);
+            resolve();
+        };
+        img.onerror = () => {
+            clearTimeout(timeout);
+            reject(new Error("Failed to load image for export"));
+        };
         img.src = url;
     });
     URL.revokeObjectURL(url);

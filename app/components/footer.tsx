@@ -1,4 +1,4 @@
-import { Github, Heart } from "lucide-react";
+import { Heart, Star } from "lucide-react";
 
 export function Footer() {
     return (
@@ -9,6 +9,15 @@ export function Footer() {
                 </p>
 
                 <div className="flex items-center gap-6">
+                    <a
+                        href="https://github.com/sh-himanshu/auto-cut"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-stone hover:text-charcoal flex items-center gap-1.5 text-sm transition-colors duration-300 sm:hidden"
+                    >
+                        <Star className="h-3.5 w-3.5" strokeWidth={1.5} />
+                        Star on GitHub
+                    </a>
                     <span className="text-stone flex items-center gap-1.5 text-sm">
                         Built with <Heart className="text-bronze h-3.5 w-3.5" strokeWidth={1.5} fill="currentColor" />
                     </span>

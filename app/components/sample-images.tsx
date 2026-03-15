@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { Loader2 } from "lucide-react";
+import { AlertCircle, Loader2 } from "lucide-react";
 
 interface SampleImagesProps {
     onFileSelected: (file: File) => void;
@@ -32,11 +32,13 @@ const SAMPLES = [
 
 export function SampleImages({ onFileSelected }: SampleImagesProps) {
     const [loadingIdx, setLoadingIdx] = useState<number | null>(null);
+    const [errorIdx, setErrorIdx] = useState<number | null>(null);
 
     const handleSampleClick = useCallback(
         async (idx: number) => {
             if (loadingIdx !== null) return;
             setLoadingIdx(idx);
+            setErrorIdx(null);
             try {
                 const res = await fetch(SAMPLES[idx].url);
                 if (!res.ok) throw new Error("Fetch failed");
@@ -47,7 +49,7 @@ export function SampleImages({ onFileSelected }: SampleImagesProps) {
                 });
                 onFileSelected(file);
             } catch {
-                // Silently fail — user can still upload manually
+                setErrorIdx(idx);
             } finally {
                 setLoadingIdx(null);
             }
@@ -71,6 +73,10 @@ export function SampleImages({ onFileSelected }: SampleImagesProps) {
                                 <div className="bg-charcoal/5 flex h-full w-full items-center justify-center">
                                     <Loader2 className="text-bronze h-4 w-4 animate-spin" strokeWidth={1.5} />
                                 </div>
+                            ) : errorIdx === idx ? (
+                                <div className="flex h-full w-full items-center justify-center bg-red-50 dark:bg-red-950/20">
+                                    <AlertCircle className="h-4 w-4 text-red-400" strokeWidth={1.5} />
+                                </div>
                             ) : (
                                 /* eslint-disable-next-line @next/next/no-img-element */
                                 <img
@@ -82,7 +88,7 @@ export function SampleImages({ onFileSelected }: SampleImagesProps) {
                             )}
                         </div>
                         <span className="text-stone group-hover:text-charcoal text-[10px] font-light transition-colors">
-                            {sample.label}
+                            {errorIdx === idx ? "Failed" : sample.label}
                         </span>
                     </button>
                 ))}

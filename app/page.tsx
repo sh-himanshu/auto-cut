@@ -1,5 +1,6 @@
 import { Header } from "./components/header";
 import { AppContainer } from "./components/app-container";
+import { ErrorBoundary } from "./components/error-boundary";
 import { Features } from "./components/features";
 import { Footer } from "./components/footer";
 
@@ -7,7 +8,7 @@ export default function Home() {
     return (
         <>
             {/* SVG filter for grainy texture */}
-            <svg className="hidden">
+            <svg className="hidden" aria-hidden="true">
                 <filter id="grainy">
                     <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
                     <feColorMatrix type="saturate" values="0" />
@@ -15,10 +16,10 @@ export default function Home() {
             </svg>
 
             {/* Animated mesh gradient background */}
-            <div className="mesh-bg" />
+            <div className="mesh-bg" aria-hidden="true" />
 
             {/* Grainy Texture Overlay */}
-            <div className="noise-bg" />
+            <div className="noise-bg" aria-hidden="true" />
 
             <Header />
 
@@ -32,11 +33,13 @@ export default function Home() {
                     <p className="text-stone text-lg leading-relaxed font-light tracking-wide">
                         High-quality image editing directly in your browser.
                         <br />
-                        No servers, no tracking, purely elegant.
+                        No servers, no tracking, just pure simplicity.
                     </p>
                 </div>
 
-                <AppContainer />
+                <ErrorBoundary>
+                    <AppContainer />
+                </ErrorBoundary>
 
                 <Features />
             </main>

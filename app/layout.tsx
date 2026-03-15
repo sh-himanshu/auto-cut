@@ -77,7 +77,9 @@ export default function RootLayout({
             suppressHydrationWarning
         >
             <head>
-                <link rel="manifest" href="/manifest.json" />
+                <link rel="manifest" href="/auto-cut/manifest.json" />
+                <link rel="icon" href="/auto-cut/favicon.ico" sizes="any" />
+                <link rel="apple-touch-icon" href="/auto-cut/apple-touch-icon.png" />
                 <script
                     dangerouslySetInnerHTML={{
                         __html: `(function(){try{var t=localStorage.getItem("theme");if(t==="dark"||(!t&&matchMedia("(prefers-color-scheme:dark)").matches))document.documentElement.classList.add("dark")}catch(e){}})()`,

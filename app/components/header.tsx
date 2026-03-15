@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { Moon, Sun, Star, Github } from "lucide-react";
+import Link from "next/link";
+import { Moon, Sun, Star, History } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useTheme } from "./theme-provider";
 
@@ -38,12 +39,21 @@ export function Header() {
 
                 {/* Right nav */}
                 <div className="flex items-center gap-4">
-                    {/* Star on GitHub */}
+                    {/* Changelog */}
+                    <Link
+                        href="/changelog"
+                        className="border-sand bg-surface text-stone hover:border-bronze hover:text-charcoal flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-all duration-300"
+                    >
+                        <History className="h-4 w-4" strokeWidth={1.5} />
+                        <span className="hidden sm:inline">Changelog</span>
+                    </Link>
+
+                    {/* Star on GitHub — hidden on mobile */}
                     <a
                         href="https://github.com/sh-himanshu/auto-cut"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="border-sand bg-surface text-stone hover:border-bronze hover:text-charcoal flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-all duration-300"
+                        className="border-sand bg-surface text-stone hover:border-bronze hover:text-charcoal hidden items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-all duration-300 sm:flex"
                     >
                         <Star className="h-4 w-4" strokeWidth={1.5} />
                         Star on GitHub

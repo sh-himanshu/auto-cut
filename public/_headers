@@ -1,0 +1,6 @@
+# GitHub Pages / static hosting headers
+# Required for WebGPU/SharedArrayBuffer support in HuggingFace models
+
+/auto-cut/*
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: credentialless

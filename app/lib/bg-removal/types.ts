@@ -2,7 +2,7 @@ export interface BackgroundRemovalAdapter {
     readonly name: string;
     readonly description: string;
     removeBackground(imageBlob: Blob, onProgress?: (progress: number) => void): Promise<Blob>;
-    dispose?(): void;
+    dispose?(): void | Promise<void>;
 }
 
 export type ModelId = "imgly" | "huggingface" | "rmbg2";

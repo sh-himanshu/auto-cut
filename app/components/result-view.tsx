@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "motion/react";
 import { Check, RotateCcw, Copy, Download, RefreshCw } from "lucide-react";
 import { OutputOptions } from "./output-options";
@@ -30,6 +31,14 @@ export function ResultView({
     onReprocess,
     newModelName,
 }: ResultViewProps) {
+    const [copied, setCopied] = useState(false);
+
+    const handleCopy = () => {
+        onCopy();
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
+
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -129,11 +138,20 @@ export function ResultView({
                 <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    onClick={onCopy}
+                    onClick={handleCopy}
                     className="text-charcoal hover:border-sand hover:bg-charcoal/5 flex items-center gap-2 rounded-full border border-transparent px-6 py-2.5 font-light transition-all duration-300"
                 >
-                    <Copy className="h-4 w-4" strokeWidth={1.5} />
-                    Copy
+                    {copied ? (
+                        <>
+                            <Check className="h-4 w-4 text-green-500" strokeWidth={1.5} />
+                            Copied!
+                        </>
+                    ) : (
+                        <>
+                            <Copy className="h-4 w-4" strokeWidth={1.5} />
+                            Copy
+                        </>
+                    )}
                 </motion.button>
                 <motion.button
                     whileHover={{ scale: 1.02 }}

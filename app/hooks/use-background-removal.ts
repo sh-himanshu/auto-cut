@@ -19,6 +19,10 @@ interface BackgroundRemovalState {
     hfToken: string | null;
 }
 
+function revokeUrl(url: string | null) {
+    if (url) URL.revokeObjectURL(url);
+}
+
 export function useBackgroundRemoval() {
     const [state, setState] = useState<BackgroundRemovalState>({
         status: "idle",
@@ -40,9 +44,31 @@ export function useBackgroundRemoval() {
 
     const resultBlobRef = useRef<Blob | null>(null);
     const originalFileRef = useRef<File | null>(null);
+    // Track URLs in refs so callbacks don't depend on state URLs
+    const originalUrlRef = useRef<string | null>(null);
+    const resultUrlRef = useRef<string | null>(null);
+
+    // Keep refs in sync with state
+    useEffect(() => {
+        originalUrlRef.current = state.originalUrl;
+    }, [state.originalUrl]);
+
+    useEffect(() => {
+        resultUrlRef.current = state.resultUrl;
+    }, [state.resultUrl]);
+
+    // Cleanup blob URLs on unmount to prevent memory leaks
+    useEffect(() => {
+        return () => {
+            revokeUrl(originalUrlRef.current);
+            revokeUrl(resultUrlRef.current);
+        };
+    }, []);
 
     const setModel = useCallback((modelId: ModelId) => {
-        setState((prev) => ({ ...prev, modelId }));
+        setState((prev) =>
+            prev.status === "error" ? { ...prev, modelId, status: "idle", error: null } : { ...prev, modelId },
+        );
     }, []);
 
     const setExportSettings = useCallback((exportSettings: ExportSettings) => {
@@ -59,9 +85,9 @@ export function useBackgroundRemoval() {
         async (file: File) => {
             originalFileRef.current = file;
 
-            // Revoke previous URLs
-            if (state.originalUrl) URL.revokeObjectURL(state.originalUrl);
-            if (state.resultUrl) URL.revokeObjectURL(state.resultUrl);
+            // Revoke previous URLs via refs (avoids stale closure)
+            revokeUrl(originalUrlRef.current);
+            revokeUrl(resultUrlRef.current);
 
             const originalUrl = URL.createObjectURL(file);
             setState((prev) => ({
@@ -93,20 +119,23 @@ export function useBackgroundRemoval() {
                     processedModelId: prev.modelId,
                 }));
             } catch (err) {
+                // Revoke the originalUrl we just created on failure
+                revokeUrl(originalUrl);
                 setState((prev) => ({
                     ...prev,
                     status: "error",
+                    originalUrl: null,
                     error: err instanceof Error ? err.message : "Processing failed",
                 }));
             }
         },
-        [state.modelId, state.originalUrl, state.resultUrl, state.hfToken],
+        [state.modelId, state.hfToken],
     );
 
     const reprocess = useCallback(async () => {
         if (!originalFileRef.current) return;
 
-        if (state.resultUrl) URL.revokeObjectURL(state.resultUrl);
+        revokeUrl(resultUrlRef.current);
 
         setState((prev) => ({
             ...prev,
@@ -123,7 +152,7 @@ export function useBackgroundRemoval() {
             setState((prev) => ({ ...prev, status: "processing" }));
 
             const resultBlob = await adapter.removeBackground(originalFileRef.current!, (progress) => {
-                setState((prev) => ({ ...prev, progress }));
+                setState((prev) => ({ ...prev, progress: Math.max(prev.progress, progress) }));
             });
 
             resultBlobRef.current = resultBlob;
@@ -142,25 +171,25 @@ export function useBackgroundRemoval() {
                 error: err instanceof Error ? err.message : "Processing failed",
             }));
         }
-    }, [state.modelId, state.resultUrl, state.hfToken]);
+    }, [state.modelId, state.hfToken]);
 
     const reset = useCallback(() => {
-        if (state.originalUrl) URL.revokeObjectURL(state.originalUrl);
-        if (state.resultUrl) URL.revokeObjectURL(state.resultUrl);
+        revokeUrl(originalUrlRef.current);
+        revokeUrl(resultUrlRef.current);
         resultBlobRef.current = null;
         originalFileRef.current = null;
-        setState({
+        setState((prev) => ({
             status: "idle",
             progress: 0,
-            modelId: state.modelId,
+            modelId: prev.modelId,
             processedModelId: null,
             originalUrl: null,
             resultUrl: null,
             error: null,
             exportSettings: DEFAULT_EXPORT_SETTINGS,
-            hfToken: state.hfToken,
-        });
-    }, [state.originalUrl, state.resultUrl, state.modelId, state.hfToken]);
+            hfToken: prev.hfToken,
+        }));
+    }, []);
 
     const downloadResult = useCallback(async () => {
         if (!resultBlobRef.current) return;
@@ -173,14 +202,15 @@ export function useBackgroundRemoval() {
             a.click();
             URL.revokeObjectURL(url);
         } catch {
-            if (state.resultUrl) {
+            const fallbackUrl = resultUrlRef.current;
+            if (fallbackUrl) {
                 const a = document.createElement("a");
-                a.href = state.resultUrl;
+                a.href = fallbackUrl;
                 a.download = "auto-cut-result.png";
                 a.click();
             }
         }
-    }, [state.exportSettings, state.resultUrl]);
+    }, [state.exportSettings]);
 
     const copyResult = useCallback(async () => {
         if (!resultBlobRef.current) return;

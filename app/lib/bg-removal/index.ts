@@ -23,7 +23,17 @@ export const MODEL_OPTIONS: ModelOption[] = [
 
 const adapterCache = new Map<string, BackgroundRemovalAdapter>();
 
+export function disposeAdapter(modelId: ModelId, hfToken?: string): void {
+    const cacheKey = modelId === "rmbg2" ? `${modelId}:${hfToken ?? ""}` : modelId;
+    const cached = adapterCache.get(cacheKey);
+    if (cached) {
+        cached.dispose?.();
+        adapterCache.delete(cacheKey);
+    }
+}
+
 export async function getAdapter(modelId: ModelId, hfToken?: string): Promise<BackgroundRemovalAdapter> {
+    if (modelId === "rmbg2" && !hfToken) throw new Error("RMBG-2.0 requires a HuggingFace access token");
     const cacheKey = modelId === "rmbg2" ? `${modelId}:${hfToken ?? ""}` : modelId;
     const cached = adapterCache.get(cacheKey);
     if (cached) return cached;
@@ -42,9 +52,8 @@ export async function getAdapter(modelId: ModelId, hfToken?: string): Promise<Ba
             break;
         }
         case "rmbg2": {
-            if (!hfToken) throw new Error("RMBG-2.0 requires a HuggingFace access token");
             const { Rmbg2Adapter } = await import("./rmbg2-adapter");
-            adapter = new Rmbg2Adapter(hfToken);
+            adapter = new Rmbg2Adapter(hfToken!);
             break;
         }
     }
