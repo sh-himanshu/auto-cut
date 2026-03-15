@@ -1,26 +1,218 @@
 @import "tailwindcss";
 
+/* ── Design Tokens ── */
+
+@theme {
+    --color-base: oklch(0.96 0.005 80);
+    --color-surface: oklch(1 0 0);
+    --color-charcoal: oklch(0.2 0.005 60);
+    --color-stone: oklch(0.6 0.01 70);
+    --color-sand: oklch(0.92 0.008 75);
+    --color-bronze: oklch(0.68 0.08 60);
+
+    --font-sans: var(--font-inter);
+    --font-serif: var(--font-cormorant);
+
+    --shadow-elegant: 0 30px 60px -10px rgba(0, 0, 0, 0.05), 0 10px 20px -5px rgba(0, 0, 0, 0.02);
+    --shadow-elegant-sm: 0 10px 30px -5px rgba(0, 0, 0, 0.03);
+}
+
+/* ── Light / Dark CSS Variables ── */
+
 :root {
-    --background: #ffffff;
-    --foreground: #171717;
+    --color-base-rgb: 244, 242, 237;
+    --color-surface-rgb: 255, 255, 255;
+    --color-charcoal-rgb: 28, 27, 26;
+    --color-stone-rgb: 138, 135, 130;
+    --color-sand-rgb: 232, 229, 223;
+    --color-bronze-rgb: 181, 149, 115;
 }
 
-@theme inline {
-    --color-background: var(--background);
-    --color-foreground: var(--foreground);
-    --font-sans: var(--font-geist-sans);
-    --font-mono: var(--font-geist-mono);
+.dark {
+    --color-base: oklch(0.16 0.006 60);
+    --color-surface: oklch(0.22 0.008 55);
+    --color-charcoal: oklch(0.93 0.005 80);
+    --color-stone: oklch(0.7 0.01 70);
+    --color-sand: oklch(0.3 0.01 55);
+    --color-bronze: oklch(0.73 0.08 60);
+
+    --color-base-rgb: 24, 23, 22;
+    --color-surface-rgb: 38, 36, 34;
+    --color-charcoal-rgb: 234, 232, 228;
+    --color-stone-rgb: 163, 160, 154;
+    --color-sand-rgb: 61, 58, 55;
+    --color-bronze-rgb: 196, 164, 130;
 }
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        --background: #0a0a0a;
-        --foreground: #ededed;
+/* ── Base Styles ── */
+
+body {
+    background-image:
+        radial-gradient(at 0% 0%, rgba(255, 255, 255, 0.8) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(255, 255, 255, 0.6) 0px, transparent 50%);
+    background-attachment: fixed;
+    transition: background-color 0.5s ease;
+}
+
+.dark body {
+    background-image: none;
+}
+
+/* ── Animated Mesh Gradient ── */
+
+.mesh-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.mesh-bg::before,
+.mesh-bg::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0;
+    animation: meshFloat 20s ease-in-out infinite;
+}
+
+/* ── Light mode blobs ── */
+
+.mesh-bg::before {
+    width: 55vw;
+    height: 55vw;
+    top: -10%;
+    left: -5%;
+    background: radial-gradient(circle, rgba(181, 149, 115, 0.08) 0%, transparent 70%);
+    opacity: 1;
+}
+
+.mesh-bg::after {
+    width: 50vw;
+    height: 50vw;
+    bottom: -5%;
+    right: -5%;
+    background: radial-gradient(circle, rgba(140, 110, 80, 0.06) 0%, transparent 70%);
+    opacity: 1;
+    animation-delay: -10s;
+    animation-direction: reverse;
+}
+
+/* ── Dark mode blobs (stronger) ── */
+
+.dark .mesh-bg::before {
+    width: 70vw;
+    height: 70vw;
+    top: -15%;
+    left: -10%;
+    background: radial-gradient(circle, rgba(181, 149, 115, 0.5) 0%, rgba(181, 149, 115, 0.15) 40%, transparent 65%);
+    filter: blur(60px);
+    opacity: 1;
+}
+
+.dark .mesh-bg::after {
+    width: 60vw;
+    height: 60vw;
+    bottom: -10%;
+    right: -10%;
+    background: radial-gradient(circle, rgba(160, 130, 95, 0.35) 0%, rgba(140, 110, 80, 0.1) 40%, transparent 65%);
+    filter: blur(60px);
+    opacity: 1;
+    animation-delay: -10s;
+    animation-direction: reverse;
+}
+
+@keyframes meshFloat {
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+    25% {
+        transform: translate(3%, 5%) scale(1.05);
+    }
+    50% {
+        transform: translate(-2%, 3%) scale(0.97);
+    }
+    75% {
+        transform: translate(4%, -3%) scale(1.03);
     }
 }
 
-body {
-    background: var(--background);
-    color: var(--foreground);
-    font-family: Arial, Helvetica, sans-serif;
+/* ── Grainy Texture Overlay (CSS-Tricks technique) ── */
+
+.noise-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.noise-bg::before {
+    content: "";
+    position: absolute;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    background-image:
+        radial-gradient(at 40% 20%, rgba(181, 149, 115, 0.04) 0%, transparent 50%),
+        radial-gradient(at 80% 70%, rgba(181, 149, 115, 0.03) 0%, transparent 50%);
+    filter: url(#grainy);
+    opacity: 0.25;
+}
+
+.dark .noise-bg::before {
+    background-image:
+        radial-gradient(at 25% 20%, rgba(181, 149, 115, 0.18) 0%, transparent 45%),
+        radial-gradient(at 75% 75%, rgba(140, 110, 80, 0.12) 0%, transparent 45%),
+        radial-gradient(at 50% 50%, rgba(200, 180, 160, 0.06) 0%, transparent 50%);
+    opacity: 0.4;
+}
+
+/* ── Checkerboard (transparent bg preview) ── */
+
+.checkerboard {
+    background-image:
+        linear-gradient(45deg, rgba(var(--color-charcoal-rgb), 0.05) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(var(--color-charcoal-rgb), 0.05) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(var(--color-charcoal-rgb), 0.05) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(var(--color-charcoal-rgb), 0.05) 75%);
+    background-size: 20px 20px;
+    background-position:
+        0 0,
+        0 10px,
+        10px -10px,
+        -10px 0px;
+    background-color: rgb(var(--color-surface-rgb));
+}
+
+/* ── Scrollbar ── */
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgb(var(--color-sand-rgb));
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(var(--color-bronze-rgb));
+}
+
+/* ── Button Elegance ── */
+
+.btn-elegant {
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.btn-elegant:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px -5px rgba(var(--color-bronze-rgb), 0.3);
 }

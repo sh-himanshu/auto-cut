@@ -4,8 +4,8 @@ import { useEffect } from "react";
 
 export function ServiceWorkerRegistrar() {
     useEffect(() => {
-        if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("/sw.js").catch((err) => {
+        if ("serviceWorker" in navigator && process.env.NODE_ENV === "production") {
+            navigator.serviceWorker.register("/auto-cut/sw.js").catch((err) => {
                 console.error("SW registration failed:", err);
             });
         }

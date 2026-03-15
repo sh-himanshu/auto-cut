@@ -1,0 +1,122 @@
+"use client";
+
+import { useCallback, useRef, useState } from "react";
+import { motion } from "motion/react";
+import { ImageIcon } from "lucide-react";
+import { SampleImages } from "./sample-images";
+
+interface DropzoneProps {
+    onFileSelected: (file: File) => void;
+    disabled?: boolean;
+}
+
+const ACCEPTED_TYPES = ["image/png", "image/jpeg", "image/webp"];
+
+export function Dropzone({ onFileSelected, disabled }: DropzoneProps) {
+    const [isDragging, setIsDragging] = useState(false);
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    const handleFile = useCallback(
+        (file: File) => {
+            if (ACCEPTED_TYPES.includes(file.type)) {
+                onFileSelected(file);
+            }
+        },
+        [onFileSelected],
+    );
+
+    const handleDrop = useCallback(
+        (e: React.DragEvent) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setIsDragging(false);
+            const file = e.dataTransfer.files[0];
+            if (file) handleFile(file);
+        },
+        [handleFile],
+    );
+
+    const handleDragOver = useCallback((e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(true);
+    }, []);
+
+    const handleDragLeave = useCallback((e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+    }, []);
+
+    const handleChange = useCallback(
+        (e: React.ChangeEvent<HTMLInputElement>) => {
+            const file = e.target.files?.[0];
+            if (file) handleFile(file);
+        },
+        [handleFile],
+    );
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.4 }}
+            className="flex w-full flex-col items-center"
+        >
+            <div
+                onDrop={disabled ? undefined : handleDrop}
+                onDragOver={disabled ? undefined : handleDragOver}
+                onDragEnter={disabled ? undefined : handleDragOver}
+                onDragLeave={disabled ? undefined : handleDragLeave}
+                onClick={disabled ? undefined : () => inputRef.current?.click()}
+                className={`group relative flex w-full flex-col items-center justify-center overflow-hidden rounded-[1.5rem] border-2 border-dashed px-6 py-20 transition-all duration-500 ${
+                    disabled
+                        ? "border-sand/50 bg-surface/50 cursor-not-allowed opacity-50"
+                        : isDragging
+                          ? "border-bronze bg-bronze/5 cursor-pointer"
+                          : "border-sand/80 bg-surface/40 hover:border-bronze/60 hover:bg-bronze/5 cursor-pointer"
+                }`}
+            >
+                <input
+                    ref={inputRef}
+                    type="file"
+                    accept={ACCEPTED_TYPES.join(",")}
+                    onChange={handleChange}
+                    className="hidden"
+                />
+
+                <motion.div
+                    className="text-stone group-hover:text-bronze mb-4 rounded-full p-4 transition-colors duration-500"
+                    animate={isDragging ? { scale: 1.15, rotate: 5 } : { scale: 1, rotate: 0 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                >
+                    <ImageIcon className="h-10 w-10" strokeWidth={1} />
+                </motion.div>
+
+                <h3 className="text-charcoal mb-2 font-serif text-xl font-medium tracking-wide">
+                    Select an image to begin
+                </h3>
+                <p className="text-stone mb-8 text-sm font-light">Drag and drop, or click to browse</p>
+
+                <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="btn-elegant bg-charcoal text-surface flex items-center gap-2 rounded-full px-8 py-3 font-light tracking-wide"
+                >
+                    Upload Image
+                </motion.button>
+
+                <div className="text-stone mt-8 flex gap-6 text-sm font-light tracking-widest uppercase">
+                    <span>PNG</span>
+                    <span>&middot;</span>
+                    <span>JPG</span>
+                    <span>&middot;</span>
+                    <span>WEBP</span>
+                </div>
+            </div>
+
+            <SampleImages onFileSelected={onFileSelected} />
+        </motion.div>
+    );
+}

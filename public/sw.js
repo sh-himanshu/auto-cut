@@ -1,5 +1,5 @@
 const CACHE_NAME = "auto-cut-v1";
-const PRECACHE_URLS = ["/", "/manifest.json"];
+const PRECACHE_URLS = ["/auto-cut/", "/auto-cut/manifest.json"];
 
 self.addEventListener("install", (event) => {
     event.waitUntil(
