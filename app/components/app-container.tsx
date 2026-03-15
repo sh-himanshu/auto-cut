@@ -49,7 +49,7 @@ export function AppContainer() {
     const needsToken = selectedModel?.requiresToken && !hfToken;
 
     return (
-        <div className="border-surface bg-surface shadow-elegant relative w-full max-w-3xl overflow-hidden rounded-[2rem] border p-2 transition-all duration-500 md:p-8">
+        <div className="border-surface bg-surface shadow-elegant relative w-full max-w-3xl overflow-hidden rounded-[2rem] border p-4 transition-all duration-500 sm:p-6 md:p-8">
             {/* Model Selector — always visible */}
             <div className="mb-6">
                 <ModelSelector

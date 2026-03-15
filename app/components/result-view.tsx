@@ -51,7 +51,7 @@ export function ResultView({
             className="flex flex-col"
         >
             {/* Header */}
-            <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
+            <div className="mb-6 flex flex-col gap-3 sm:mb-8 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
                 <h3 className="text-charcoal flex items-center gap-2 font-serif text-xl font-medium">
                     <motion.span
                         initial={{ scale: 0 }}
@@ -71,7 +71,7 @@ export function ResultView({
                                 nudge();
                                 onReprocess();
                             }}
-                            className="border-bronze/30 bg-bronze/5 text-bronze hover:border-bronze hover:bg-bronze/10 flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm font-light transition-all duration-300"
+                            className="border-bronze/30 bg-bronze/5 text-bronze hover:border-bronze hover:bg-bronze/10 flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-light transition-all duration-300 sm:px-4 sm:text-sm"
                         >
                             <RefreshCw className="h-3.5 w-3.5" strokeWidth={1.5} />
                             Reprocess{newModelName ? ` with ${newModelName}` : ""}
@@ -142,13 +142,13 @@ export function ResultView({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.4 }}
-                className="border-sand mt-6 flex justify-end gap-4 border-t pt-8"
+                className="border-sand mt-6 flex flex-col gap-3 border-t pt-6 sm:flex-row sm:justify-end sm:gap-4 sm:pt-8"
             >
                 <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={handleCopy}
-                    className="text-charcoal hover:border-sand hover:bg-charcoal/5 flex items-center gap-2 rounded-full border border-transparent px-6 py-2.5 font-light transition-all duration-300"
+                    className="text-charcoal hover:border-sand hover:bg-charcoal/5 flex items-center justify-center gap-2 rounded-full border border-transparent px-6 py-2.5 font-light transition-all duration-300"
                 >
                     {copied ? (
                         <>
@@ -169,7 +169,7 @@ export function ResultView({
                         success();
                         onDownload();
                     }}
-                    className="btn-elegant bg-charcoal text-surface flex items-center gap-2 rounded-full px-8 py-2.5 font-light tracking-wide"
+                    className="btn-elegant bg-charcoal text-surface flex items-center justify-center gap-2 rounded-full px-8 py-2.5 font-light tracking-wide"
                 >
                     <Download className="h-4 w-4" strokeWidth={1.5} />
                     Download {exportSettings.format.toUpperCase()}
